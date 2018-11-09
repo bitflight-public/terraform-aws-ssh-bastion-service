@@ -34,6 +34,11 @@ variable "subnets_lb" {
   description = "list of subnets for load balancer - availability zones must match subnets_asg"
   default     = []
 }
+variable "subnets_lb_count" {
+  type        = "string"
+  description = "the length of the list of subnets for load balancer"
+  default     = "0"
+}
 
 variable "subnets_asg" {
   type        = "list"
