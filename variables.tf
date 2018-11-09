@@ -35,7 +35,6 @@ variable "subnets_lb" {
   default     = []
 }
 
-
 variable "subnets_asg" {
   type        = "list"
   description = "list of subnets for autoscaling group - availability zones must match subnets_lb"
