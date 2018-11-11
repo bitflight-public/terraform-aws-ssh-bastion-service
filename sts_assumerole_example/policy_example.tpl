@@ -32,7 +32,7 @@
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::${aws_profile}:root"
+        "AWS": "arn:aws:iam::${aws_account_id}:root"
       },
       "Action": "sts:AssumeRole",
       "Condition": {}

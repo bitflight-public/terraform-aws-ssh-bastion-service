@@ -63,12 +63,6 @@ variable "bastion_allowed_iam_group" {
   default     = ""
 }
 
-variable "tags" {
-  type        = "map"
-  description = "AWS tags that should be associated with created resources"
-  default     = {}
-}
-
 ##############################
 #LB ASG variables
 ##############################
