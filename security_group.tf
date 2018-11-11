@@ -58,7 +58,6 @@ resource "aws_security_group_rule" "bastion_host_out" {
 
 # access from lb cidr ranges for healthchecks 
 
-
 data "aws_subnet" "lb_subnets" {
   count = "${var.subnets_lb_count}"
   id    = "${var.subnets_lb[count.index]}"

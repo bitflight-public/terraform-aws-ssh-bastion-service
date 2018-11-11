@@ -34,6 +34,7 @@ variable "subnets_lb" {
   description = "list of subnets for load balancer - availability zones must match subnets_asg"
   default     = []
 }
+
 variable "subnets_lb_count" {
   type        = "string"
   description = "the length of the list of subnets for load balancer"
@@ -107,9 +108,9 @@ variable "asg_desired" {
   default     = "1"
 }
 
-variable "aws_region" {}
+# variable "aws_region" {}
 
-variable "aws_profile" {}
+# variable "aws_profile" {}
 
 variable "assume_role_arn" {
   description = "arn for role to assume in separate identity account if used"
