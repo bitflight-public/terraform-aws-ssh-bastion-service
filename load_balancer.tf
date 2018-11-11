@@ -67,7 +67,7 @@ resource "aws_lb_target_group" "bastion-service" {
 #######################################################	
 resource "aws_lb_target_group" "bastion-host" {
   count    = "${(local.hostport_whitelisted ? 1 : 0) }"
-  name     = "${substr("${module.label.id}-tg", 0, min(length("${module.label.id}-tg"), 32))}"
+  name     = "${substr("${module.label.id}-host-tg", 0, min(length("${module.label.id}-host-tg"), 32))}"
   protocol = "TCP"
   port     = 2222
   vpc_id   = "${var.vpc}"
