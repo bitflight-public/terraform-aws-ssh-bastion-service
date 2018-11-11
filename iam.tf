@@ -1,7 +1,7 @@
 #aws iam role for host -same account queries
 
 resource "aws_iam_role" "bastion_service_role" {
-  name = "${var.environment_name}-${data.aws_region.current.name}-${var.vpc}_bastion"
+  name_prefix = "${module.label.id}-role"
 
   count = "${local.assume_role_no}"
 
@@ -26,14 +26,14 @@ EOF
 #########################
 
 resource "aws_iam_instance_profile" "bastion_service_profile" {
-  name  = "${var.environment_name}-${data.aws_region.current.name}-${var.vpc}_bastion"
-  count = "${local.assume_role_no}"
+  name_prefix = "${module.label.id}-profile"
+  count       = "${local.assume_role_no}"
 
   role = "${aws_iam_role.bastion_service_role.name}"
 }
 
 resource "aws_iam_policy" "check_ssh_authorized_keys" {
-  name = "${var.environment_name}-${data.aws_region.current.name}-${var.vpc}_check_ssh_authorized_keys"
+  name_prefix = "${module.label.id}-check-ssh-authorized-keys"
 
   description = "Allow querying aws to obtain list of users with their ssh public keys"
   count       = "${local.assume_role_no}"

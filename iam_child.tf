@@ -1,7 +1,7 @@
 #role in child account
 
 resource "aws_iam_role" "bastion_service_assume_role" {
-  name = "${var.environment_name}-${data.aws_region.current.name}-${var.vpc}_bastion"
+  name = "${module.label.id}-role"
 
   count = "${local.assume_role_yes}"
 
@@ -23,7 +23,7 @@ EOF
 
 #Instance profile
 resource "aws_iam_instance_profile" "bastion_service_assume_role_profile" {
-  name  = "${var.environment_name}-${data.aws_region.current.name}-${var.vpc}_bastion"
+  name  = "${module.label.id}-profile"
   count = "${local.assume_role_yes}"
   role  = "${aws_iam_role.bastion_service_assume_role.name}"
 }
@@ -46,7 +46,7 @@ data "aws_iam_policy_document" "bastion_service_assume_role_in_parent" {
 
 resource "aws_iam_policy" "bastion_service_assume_role_in_parent" {
   count  = "${local.assume_role_yes}"
-  name   = "${var.environment_name}-${data.aws_region.current.name}-${var.vpc}_bastion"
+  name   = "${module.label.id}-policy"
   policy = "${data.aws_iam_policy_document.bastion_service_assume_role_in_parent.json}"
 }
 

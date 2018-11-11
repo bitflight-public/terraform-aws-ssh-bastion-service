@@ -3,7 +3,7 @@
 ##################
 
 resource "aws_security_group" "bastion_service" {
-  name_prefix            = "${var.environment_name}-bastion-service"
+  name_prefix            = "${module.label.id}"
   description            = "Bastion service"
   revoke_rules_on_delete = true
   vpc_id                 = "${var.vpc}"

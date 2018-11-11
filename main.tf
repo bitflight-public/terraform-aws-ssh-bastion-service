@@ -24,7 +24,7 @@ data "aws_ami" "debian" {
 ############################
 
 resource "aws_launch_configuration" "bastion-service-host" {
-  name_prefix                 = "bastion-service-host"
+  name_prefix                 = "${module.label.id}-host"
   image_id                    = "${local.bastion_ami_id}"
   instance_type               = "${var.bastion_instance_type}"
   iam_instance_profile        = "${element((concat(aws_iam_instance_profile.bastion_service_assume_role_profile.*.arn, aws_iam_instance_profile.bastion_service_profile.*.arn)), 0)}"
@@ -42,19 +42,9 @@ resource "aws_launch_configuration" "bastion-service-host" {
 # ASG section
 #######################################################
 
-data "null_data_source" "asg-tags" {
-  count = "${length(keys(var.tags))}"
-
-  inputs = {
-    key                 = "${element(keys(var.tags), count.index)}"
-    value               = "${element(values(var.tags), count.index)}"
-    propagate_at_launch = true
-  }
-}
-
 resource "aws_autoscaling_group" "bastion-service" {
   availability_zones   = ["${data.aws_availability_zones.available.names}"]
-  name_prefix          = "bastion-service-asg"
+  name_prefix          = "${module.label.id}"
   max_size             = "${var.asg_max}"
   min_size             = "${var.asg_min}"
   desired_capacity     = "${var.asg_desired}"
@@ -66,24 +56,7 @@ resource "aws_autoscaling_group" "bastion-service" {
     create_before_destroy = true
   }
 
-  tags = [
-    {
-      key                 = "Name"
-      value               = "${var.environment_name}-${data.aws_region.current.name}-${var.vpc}-bastion"
-      propagate_at_launch = true
-    },
-    {
-      key                 = "Environment"
-      value               = "${var.environment_name}"
-      propagate_at_launch = true
-    },
-    {
-      key                 = "Region"
-      value               = "${data.aws_region.current.name}"
-      propagate_at_launch = true
-    },
-    "${data.null_data_source.asg-tags.*.outputs}",
-  ]
+  tags = ["${module.label.tags_as_list_of_maps}"]
 }
 
 ####################################################
@@ -93,7 +66,7 @@ resource "aws_autoscaling_group" "bastion-service" {
 resource "aws_route53_record" "bastion_service" {
   count   = "${(var.route53_zone_id !="" ? 1 : 0) }"
   zone_id = "${var.route53_zone_id}"
-  name    = "${local.bastion_host_name}-bastion-service.${var.dns_domain}"
+  name    = "${local.bastion_host_name}.${var.dns_domain}"
   type    = "A"
 
   alias {

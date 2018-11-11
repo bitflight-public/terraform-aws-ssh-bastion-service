@@ -3,12 +3,12 @@
 #######################################################
 
 resource "aws_lb" "bastion-service" {
-  name                             = "${md5(format("bastion-service-%s",var.vpc))}"
+  name_prefix                      = "${module.label.id}"
   load_balancer_type               = "network"
   internal                         = false
   subnets                          = ["${var.subnets_lb}"]
   enable_cross_zone_load_balancing = true
-  tags                             = "${var.tags}"
+  tags                             = "${module.label.tags}"
 }
 
 ######################################################
@@ -46,10 +46,10 @@ resource "aws_lb_listener" "bastion-host" {
 # Target group service
 #######################################################
 resource "aws_lb_target_group" "bastion-service" {
-  name     = "${md5(format("bastion-service-%s",var.vpc))}"
-  protocol = "TCP"
-  port     = 22
-  vpc_id   = "${var.vpc}"
+  name_prefix = "${module.label.id}"
+  protocol    = "TCP"
+  port        = 22
+  vpc_id      = "${var.vpc}"
 
   health_check {
     healthy_threshold   = "${var.lb_healthy_threshold}"
@@ -59,7 +59,7 @@ resource "aws_lb_target_group" "bastion-service" {
     port                = "${var.lb_healthcheck_port}"
   }
 
-  tags = "${var.tags}"
+  tags = "${module.label.tags}"
 }
 
 ######################################################	
@@ -67,7 +67,7 @@ resource "aws_lb_target_group" "bastion-service" {
 #######################################################	
 resource "aws_lb_target_group" "bastion-host" {
   count    = "${(local.hostport_whitelisted ? 1 : 0) }"
-  name     = "bastion-host"
+  name     = "${module.label.id}"
   protocol = "TCP"
   port     = 2222
   vpc_id   = "${var.vpc}"
@@ -80,5 +80,5 @@ resource "aws_lb_target_group" "bastion-host" {
     port                = "${var.lb_healthcheck_port}"
   }
 
-  tags = "${var.tags}"
+  tags = "${module.label.tags}"
 }
