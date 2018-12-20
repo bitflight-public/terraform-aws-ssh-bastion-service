@@ -1,7 +1,7 @@
 #aws iam role for host -same account queries
 
 resource "aws_iam_role" "bastion_service_role" {
-  name_prefix = "${module.label.id}-role"
+  name_prefix = "${format("%.25v", module.label.id)}-role"
 
   count = "${local.assume_role_no}"
 
