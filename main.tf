@@ -51,6 +51,7 @@ resource "aws_autoscaling_group" "bastion-service" {
   launch_configuration = "${aws_launch_configuration.bastion-service-host.name}"
   vpc_zone_identifier  = ["${var.subnets_asg}"]
   target_group_arns    = ["${aws_lb_target_group.bastion-service.arn}", "${aws_lb_target_group.bastion-host.*.arn}"]
+  depends_on           = ["aws_launch_configuration.bastion-service-host"]
 
   lifecycle {
     create_before_destroy = true
